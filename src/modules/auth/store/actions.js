@@ -27,6 +27,9 @@ export const ActionCheckToken = ({ dispatch, state }) => {
 };
 
 export const ActionSignOut = ({ dispatch }) => {
+
+    console.log('sign out!!');
+
     storage.setHeaderToken('');
     storage.deleteLocalToken();
     dispatch('ActionSetUser', {});
