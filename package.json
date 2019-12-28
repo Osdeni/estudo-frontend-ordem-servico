@@ -14,8 +14,10 @@
     "jquery": "^3.4.1",
     "popper.js": "^1.16.0",
     "vue": "^2.5.11",
+    "vue-bootstrap-typeahead": "^0.2.6",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.1.3",
+    "vue-the-mask": "^0.11.1",
     "vuex": "^3.1.2"
   },
   "browserslist": [
@@ -35,7 +37,6 @@
     "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1",
-
     "babel-eslint": "^8.2.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-jest": "^21.0.2",

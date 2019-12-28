@@ -1,0 +1,1 @@
+export const ADD_CLIENTE = 'CLIENTE/ADD_CLIENTE';

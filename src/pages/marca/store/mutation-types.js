@@ -1,0 +1,1 @@
+export const SET_MARCA = 'MARCA/SET_MARCA';
