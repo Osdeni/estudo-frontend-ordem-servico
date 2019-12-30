@@ -7,3 +7,7 @@ export const ActionFindOrdemServicos = ({ commit }) => {
         commit(types.SET_ORDEM_SERVICO, res.data);
     });
 };
+
+export const ActionAddOrdemServicos = ({ commit }, payload) => {
+    return services.ordemServico.addOrdemServico(Object.assign({}, payload));
+};
