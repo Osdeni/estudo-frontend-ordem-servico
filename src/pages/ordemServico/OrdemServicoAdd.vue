@@ -146,17 +146,8 @@ export default {
       isProcessando: false,
       erros: [],
       template: ItemTemplate,
-
-      // TODO trazer variavel que limpa facil
-      // TODO trazer variavel que moca facil
-      form: {
-        dataAbertura: "23/06/1986",
-        cliente: { id: 2, nome: "osdeni hotmail", email: "osdeni@hotmail.com" },
-        responsavel: { id: 1, nome: "osdeni", email: "osdeni@gmail.com" },
-        defeito: "A TV está com problemas",
-        tipo: 1,
-        marca: 1
-      }
+      // form: this.initDataMock()
+      form: this.initData()
     };
   },
   directives: { mask },
@@ -183,7 +174,27 @@ export default {
       "ActionFindClienteAutocomplete",
       "ActionFindResponsavelAutocomplete"
     ]),
-
+    initData() {
+      return {
+        dataAbertura: "",
+        cliente: null,
+        responsavel: null,
+        defeito: "",
+        tipo: "",
+        marca: ""
+      };
+    },
+    initDataMock() {
+      // dados para testes com form preenchido
+      return {
+        dataAbertura: "23/06/1986",
+        cliente: { id: 2, nome: "osdeni hotmail", email: "osdeni@hotmail.com" },
+        responsavel: { id: 1, nome: "osdeni", email: "osdeni@gmail.com" },
+        defeito: "A TV está com problemas",
+        tipo: 1,
+        marca: 1
+      };
+    },
     getTitulo() {
       return this.isProcessando ? "Processando.." : "Salvar";
     },
@@ -220,28 +231,27 @@ export default {
     },
     async updateItemsResponsavel(query) {
       // método do autocomplete
-      // TODO diferencias na busca com "filtro"?
       await this.ActionFindResponsavelAutocomplete(query);
     },
     async submit() {
-      console.log("submetendo");
+      this.isProcessando = true;
 
       await this.ActionAddOrdemServicos(this.form)
-      .then(res => {
-        console.log('add ordem servico');
-        
-      })
-      .catch(err => {
-        console.log('ERRO ordem servico');
-      });
-
+        .then(res => {
+          this.$toast.open({
+            position: "top",
+            message: "Ordem de serviço criada com sucesso!",
+            type: "success"
+          });
+          this.$router.push({ name: "ordem-servico" });
+        })
+        .catch(err => {
+          this.erros.push("Erro ao salvar a ordem de serviço");
+        })
+        .finally(() => {
+          this.isProcessando = false;
+        });
     }
   }
 };
 </script>
-
-<style>
-.submenu-bar {
-  margin-bottom: 10px;
-}
-</style>

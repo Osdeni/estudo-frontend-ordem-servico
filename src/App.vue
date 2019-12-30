@@ -48,6 +48,11 @@ export default {
   padding: 0;
 }
 
+.submenu-bar {
+  margin-bottom: 10px;
+}
+
+/** start autocomplete */
 .v-autocomplete .v-autocomplete-list {
   width: 100%;
   text-align: left;
@@ -91,4 +96,5 @@ export default {
   .v-autocomplete-list-item.v-autocomplete-item-active {
   background-color: #f3f6fa;
 }
+/** end  autocomplete */
 </style>

@@ -31,7 +31,7 @@
             <td>{{ os.marca.descricao }}</td>
             <td>{{ new Date(os.dataAbertura).toLocaleDateString() }}</td>
             <td class="text-center">
-              <span class="badge badge-secondary">{{ os.status }}</span>
+              <span class="badge" :class="os.status.cssClass">{{ os.status.label }}</span>
             </td>
           </tr>
         </tbody>
