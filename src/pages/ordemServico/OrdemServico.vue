@@ -3,76 +3,112 @@
     <h1>Ordens de Serviço</h1>
 
     <div class="submenu-bar">
-        <router-link :to="{name: 'ordem-servico-add'}" class="btn btn-primary col-sm-12 col-md-2">Cadastrar</router-link>
+      <router-link
+        :to="{name: 'ordem-servico-add'}"
+        class="btn btn-primary col-sm-12 col-md-2"
+      >Cadastrar</router-link>
     </div>
 
+    <!-- TODO componentizar -->
+    <ul class="alert alert-danger" v-show="erros.length > 0">
+      <li v-for="erro in erros">{{ erro }}</li>
+    </ul>
+
+    <ordem-servico-filtro @filtrar="filtrar" @erros="errosFiltros"></ordem-servico-filtro>
+
+    <hr />
+
     <!-- TORNAR componente a listagem ou sem dados -->
-    <div class="table-responsive">
-      <p v-show="isProcessando">Aguarde, carregando..</p>
+    <div class="card">
+      <div class="card-header">Resultados</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <p v-show="isProcessando">Aguarde, carregando..</p>
 
-      <p v-show="ordensServicos.totalElements === 0">Nenhuma ordem de seviço encontrada</p>
+          <p v-show="ordensServicos.totalElements === 0">Nenhuma ordem de seviço encontrada</p>
 
-      <table class="table table-striped" v-show="ordensServicos.totalElements > 0">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Cliente</th>
-            <th scope="col">Tipo</th>
-            <th scope="col">Marca</th>
-            <th scope="col">Dt. Abertura</th>
-            <th scope="col" class="text-center">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="os in ordensServicos.content">
-            <th scope="row">{{ os.id }}</th>
-            <td>{{ os.cliente.nome }}Otto</td>
-            <td>{{ os.tipo.descricao }}</td>
-            <td>{{ os.marca.descricao }}</td>
-            <td>{{ new Date(os.dataAbertura).toLocaleDateString() }}</td>
-            <td class="text-center">
-              <span class="badge" :class="os.status.cssClass">{{ os.status.label }}</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
+          <table class="table table-striped" v-show="ordensServicos.totalElements > 0">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Dt. Abertura</th>
+                <th scope="col" class="text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="os in ordensServicos.content">
+                <th scope="row">{{ os.id }}</th>
+                <td>{{ os.cliente.nome }}Otto</td>
+                <td>{{ os.tipo.descricao }}</td>
+                <td>{{ os.marca.descricao }}</td>
+                <td>{{ new Date(os.dataAbertura).toLocaleDateString() }}</td>
+                <td class="text-center">
+                  <span class="badge" :class="os.status.cssClass">{{ os.status.label }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import OrdemServicoFiltro from "./OrdemServicoFiltro";
 
 export default {
   name: "OrdemServico",
   data: function() {
     return {
-      isProcessando: false
+      isProcessando: false,
+      erros: []
     };
+  },
+  components: {
+    OrdemServicoFiltro
   },
   async mounted() {
     this.isProcessando = true;
-    await this.ActionFindOrdemServicos()
-      .catch(err => {
-        alert("Ocorreu um erro inesperado");
-        console.log(err);
-      })
-      .finally(() => {
-        this.isProcessando = false;
-      });
+    await this.getOrdemServicos();
   },
   computed: {
     ...mapState("ordemServico", ["ordensServicos"])
   },
   methods: {
-    ...mapActions("ordemServico", ["ActionFindOrdemServicos"])
+    ...mapActions("ordemServico", ["ActionFindOrdemServicos"]),
+    getOrdemServicos(status) {
+      this.erros.length = 0;
+
+      if (typeof status === "undefined") {
+        status = null;
+      }
+
+      this.ActionFindOrdemServicos(status)
+        .catch(err => {
+          this.erros.push("Ocorreu um erro inesperado");
+          console.log(err);
+        })
+        .finally(() => {
+          this.isProcessando = false;
+        });
+    },
+    filtrar(form) {
+      this.getOrdemServicos(form.status);
+    },
+    errosFiltros(erro) {
+      this.erros.push(erro);
+    }
   }
 };
 </script>
 
 <style scoped>
 .submenu-bar {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 </style>
