@@ -3,7 +3,7 @@
     <h1>Ordens de Serviço</h1>
 
     <div class="submenu-bar">
-        <button class="btn btn-primary col-sm-12 col-md-2">Cadastrar</button>
+        <router-link :to="{name: 'ordem-servico-add'}" class="btn btn-primary col-sm-12 col-md-2">Cadastrar</router-link>
     </div>
 
     <!-- TORNAR componente a listagem ou sem dados -->
@@ -31,7 +31,7 @@
             <td>{{ os.marca.descricao }}</td>
             <td>{{ new Date(os.dataAbertura).toLocaleDateString() }}</td>
             <td class="text-center">
-              <span class="badge badge-secondary">{{ os.status }}</span>
+              <span class="badge" :class="os.status.cssClass">{{ os.status.label }}</span>
             </td>
           </tr>
         </tbody>
