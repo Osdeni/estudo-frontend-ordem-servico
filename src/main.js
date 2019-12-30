@@ -6,9 +6,13 @@ import router from './router';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Autocomplete from "v-autocomplete";
+
 Vue.config.productionTip = false
 
 export const EventBus = new Vue();
+
+Vue.use(Autocomplete);
 
 window._Vue = new Vue({
   router,

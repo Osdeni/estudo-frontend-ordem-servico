@@ -6,7 +6,7 @@
       <router-link :to="{name: 'ordem-servico'}" class="btn btn-primary col-sm-12 col-md-2">Voltar</router-link>
     </div>
 
-    <form>
+    <form @submit.prevent="submit()">
       <div class>
         <div class="card">
           <div class="card-header">Cadastrar ordem de serviço</div>
@@ -14,11 +14,6 @@
             <!-- TODO componentizar -->
             <ul class="alert alert-danger" v-show="erros.length > 0">
               <li v-for="erro in erros">{{ erro }}</li>
-            </ul>
-
-            <ul>
-              <li>Cliente podendo add direto com autocomplete</li>
-              <li>Responsável</li>
             </ul>
 
             <div class="form-group">
@@ -35,36 +30,29 @@
             </div>
 
             <div class="form-group">
-              <label for="defeito">Cliente</label>
+              <label for="cliente">
+                Cliente
+                <small>(Informe ao menos 2 caracteres)</small>
+              </label>
 
-              <div class="input-group">
-                <vue-bootstrap-typeahead
-                  v-model="query"
-                  :data="['Canada', 'USA', 'Mexico']"
-                  placeholder="Informe o nome do cliente"
-                />
-                <div class="input-group-append">
-                  <a
-                    type="button"
-                    class="btn btn-primary"
-                    id="btnGroupAddon2"
-                    title="Cadastrar novo cliente"
-                    @click="abrirModalCliente()"
-                  >+</a>
-                </div>
+              <div class="grupo-autocomplete">
+                <button
+                  type="button"
+                  class="btn btn-secondary col-md-2"
+                  title="Cadastrar novo cliente"
+                  @click="abrirModalCliente()"
+                >+ Novo cliente</button>
+                <v-autocomplete
+                  class="col-md-10 pl-0 pr-0"
+                  input-class="form-control"
+                  :items="clientes"
+                  :value="form.cliente"
+                  v-model="form.cliente"
+                  :get-label="getLabel"
+                  :component-item="template"
+                  @update-items="updateItems"
+                ></v-autocomplete>
               </div>
-              {{ query }}
-            </div>
-
-            <div class="form-group">
-              <label for="cliente">Cliente</label>
-              <input
-                type="text"
-                v-model="form.cliente"
-                name="cliente"
-                class="form-control"
-                required
-              />
             </div>
 
             <div class="form-group">
@@ -93,6 +81,26 @@
                   <option disabled value>Selecione um item</option>
                   <option :value="marca.id" v-for="marca in marcas">{{ marca.descricao }}</option>
                 </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="cliente">
+                Responsável
+                <small>(Informe ao menos 2 caracteres)</small>
+              </label>
+
+              <div class="grupo-autocomplete">
+                <v-autocomplete
+                  class="col-md-12 pl-0 pr-0"
+                  input-class="form-control"
+                  :items="responsaveis"
+                  :value="form.responsavel"
+                  v-model="form.responsavel"
+                  :get-label="getLabel"
+                  :component-item="template"
+                  @update-items="updateItemsResponsavel"
+                ></v-autocomplete>
               </div>
             </div>
 
@@ -129,35 +137,33 @@
 import { EventBus } from "@/main";
 import { mapActions, mapState } from "vuex";
 import { mask } from "vue-the-mask";
-import VueBootstrapTypeahead from "vue-bootstrap-typeahead";
-
-//https://github.com/alexurquhart/vue-bootstrap-typeahead
+import ItemTemplate from "./ItemAutocompleteCliente.vue";
 
 export default {
   name: "OrdemServicoAdd",
-  data: function() {
+  data() {
     return {
       isProcessando: false,
       erros: [],
-      query: "",
+      template: ItemTemplate,
+
+      // TODO trazer variavel que limpa facil
+      // TODO trazer variavel que moca facil
       form: {
-        dataAbertura: "",
-        cliente: "",
-        defeito: "",
-        tipo: "",
-        marca: ""
+        dataAbertura: "23/06/1986",
+        cliente: { id: 2, nome: "osdeni hotmail", email: "osdeni@hotmail.com" },
+        responsavel: { id: 1, nome: "osdeni", email: "osdeni@gmail.com" },
+        defeito: "A TV está com problemas",
+        tipo: 1,
+        marca: 1
       }
     };
   },
   directives: { mask },
-  components: { VueBootstrapTypeahead },
   created() {
-    console.log("created");
+    // intercepta o cadastro do cliente e atualiza no form de ordem de serviço
     EventBus.$on("clienteCadastrado", cliente => {
-      console.log("evento interceptado");
-      console.log(cliente);
-
-      this.form.cliente = cliente.id;
+      this.form.cliente = cliente;
     });
   },
   async mounted() {
@@ -165,14 +171,19 @@ export default {
     await this.getMarcas();
   },
   computed: {
-    // ...mapState("ordemServico", ["ordensServicos"])
     ...mapState("tipo", ["tipos"]),
-    ...mapState("marca", ["marcas"])
+    ...mapState("marca", ["marcas"]),
+    ...mapState("cliente", ["clientes", "responsaveis"])
   },
   methods: {
-    // ...mapActions("ordemServico", ["ActionFindOrdemServicos"])
+    ...mapActions("ordemServico", ["ActionAddOrdemServicos"]),
     ...mapActions("tipo", ["ActionFindAllTipos"]),
     ...mapActions("marca", ["ActionFindAllMarcas"]),
+    ...mapActions("cliente", [
+      "ActionFindClienteAutocomplete",
+      "ActionFindResponsavelAutocomplete"
+    ]),
+
     getTitulo() {
       return this.isProcessando ? "Processando.." : "Salvar";
     },
@@ -194,12 +205,42 @@ export default {
       }
 
       $("#modalClientes").modal();
+    },
+    async updateItems(query) {
+      // método do autocomplete
+      await this.ActionFindClienteAutocomplete(query);
+    },
+    getLabel(item) {
+      // método do autocomplete
+      try {
+        return item.nome;
+      } catch (e) {
+        return null;
+      }
+    },
+    async updateItemsResponsavel(query) {
+      // método do autocomplete
+      // TODO diferencias na busca com "filtro"?
+      await this.ActionFindResponsavelAutocomplete(query);
+    },
+    async submit() {
+      console.log("submetendo");
+
+      await this.ActionAddOrdemServicos(this.form)
+      .then(res => {
+        console.log('add ordem servico');
+        
+      })
+      .catch(err => {
+        console.log('ERRO ordem servico');
+      });
+
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
 .submenu-bar {
   margin-bottom: 10px;
 }

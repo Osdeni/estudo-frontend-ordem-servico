@@ -1,3 +1,4 @@
 export default {
-    cliente: {}
+    clientes: [],
+    responsaveis: []
 }
