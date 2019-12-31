@@ -16,12 +16,9 @@ export const ActionFindOrdemServicos = ({ commit }, payload) => {
         }
     }
 
-console.log(parameters);
-
-
     return services.ordemServico.findOrdemServicos(parameters)
         .then(res => {
-            commit(types.SET_ORDEM_SERVICO, res.data);
+            commit(types.SET_ORDEM_SERVICOS, res.data);
         });
 };
 
@@ -34,4 +31,11 @@ export const ActionListOrdemServicosStatus = ({ commit }) => {
 
 export const ActionAddOrdemServicos = ({ commit }, payload) => {
     return services.ordemServico.addOrdemServico(Object.assign({}, payload));
+};
+
+export const ActionFindOrdemServico = ({ commit }, payload) => {
+    return services.ordemServico.findOrdemServico({ id: payload })
+        .then(res => {
+            commit(types.SET_ORDEM_SERVICO, res.data);
+        });
 };

@@ -39,7 +39,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="os in ordensServicos.content">
+              <tr v-for="os in ordensServicos.content" @click="abrirDetalhes(os.id)">
                 <th scope="row">{{ os.id }}</th>
                 <td>{{ os.cliente.nome }}Otto</td>
                 <td>{{ os.tipo.descricao }}</td>
@@ -98,6 +98,9 @@ export default {
     },
     errosFiltros(erro) {
       this.erros.push(erro);
+    },
+    abrirDetalhes(id) {
+      this.$router.push({ name: 'ordem-servico-detalhe', params: {id: id} });
     }
   }
 };
