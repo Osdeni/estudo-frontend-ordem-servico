@@ -81,14 +81,10 @@ export default {
   },
   methods: {
     ...mapActions("ordemServico", ["ActionFindOrdemServicos"]),
-    getOrdemServicos(status) {
+    getOrdemServicos(form) {
       this.erros.length = 0;
 
-      if (typeof status === "undefined") {
-        status = null;
-      }
-
-      this.ActionFindOrdemServicos(status)
+      this.ActionFindOrdemServicos(form)
         .catch(err => {
           this.erros.push("Ocorreu um erro inesperado");
           console.log(err);
@@ -98,7 +94,7 @@ export default {
         });
     },
     filtrar(form) {
-      this.getOrdemServicos(form.status);
+      this.getOrdemServicos(form);
     },
     errosFiltros(erro) {
       this.erros.push(erro);
