@@ -9,5 +9,8 @@ export default {
     },
     [types.SET_ORDEM_SERVICO_STATUS] (state, payload) {
         state.ordemServicosStatus = payload
+    },
+    [types.SET_ORDEM_SERVICO_EVOLUCOES] (state, payload) {
+        state.ordemServicoEvolucoes = payload
     }
 }

@@ -55,7 +55,7 @@ import { mapActions } from "vuex";
 export default {
   data: () => ({
     form: {
-      email: "osdeni@gmail.com",
+      email: "func2@gmail.com",
       senha: "secret"
     },
     erros: [],
@@ -82,6 +82,8 @@ export default {
           } else {
             this.erros.push("Erro na autenticação, retorno inesperado");
           }
+          console.log(err);
+          
         })
         .finally(() => {
           this.isProcessando = false;
