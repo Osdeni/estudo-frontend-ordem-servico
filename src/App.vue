@@ -13,22 +13,10 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">
-              Ordens de serviços
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-
-          <li class="nav-item"></li>
+          <li class="nav-item active text-light">Ordens de serviços</li>
         </ul>
 
         <ul class="navbar-nav">
@@ -43,7 +31,7 @@
               aria-expanded="false"
             >{{ user.usuario.nome }}</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Sair</a>
+              <a href="" class="dropdown-item" @click.prevent="logout()">Sair</a>
             </div>
           </li>
         </ul>
@@ -56,16 +44,22 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "app",
   computed: {
     ...mapState("auth", ["user"])
   },
+
   methods: {
+    ...mapActions("auth", ["ActionSignOut"]),
     isUsuarioAutenticado() {
       return Object.entries(this.user).length === 0 ? false : true;
+    },
+    logout() {
+      this.ActionSignOut();
+      this.$router.push({ name: "login" });
     }
   }
 };

@@ -54,10 +54,9 @@ export const ActionSetToken = ({ commit }, payload) => {
  * @param {*} rolesAllowed 
  */
 export const ActionCheckIsRole = ({ state }, rolesAllowed = []) => {
-
     if (!Array.isArray(rolesAllowed)) {
         alert('ActionCheckIsRole: O parâmetro deve ser array: ["", ""...]');
-        return false;
+        return Promise.resolve(false);
     }
 
     let rolesUser = [];
@@ -75,9 +74,10 @@ export const ActionCheckIsRole = ({ state }, rolesAllowed = []) => {
             });
         });
 
-        return checkedUserAllowed.length > 0;
-        
+        if (checkedUserAllowed.length > 0) {
+            return Promise.resolve(true);
+        }
     }
 
-    return false;
+    return Promise.resolve(false);
 };

@@ -89,7 +89,6 @@ export default {
     ...mapState("auth", ["user"])
   },
   methods: {
-    ...mapActions("auth", ["ActionCheckIsRole"]),
     ...mapActions("ordemServico", [
       "ActionAddEvolucao",
       "ActionListAllEvolucoes",

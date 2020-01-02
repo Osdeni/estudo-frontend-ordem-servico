@@ -75,7 +75,6 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import roles from '@/modules/auth/roles.js';
 import Evolucoes from './OrdemServicoEvolucao';
 import StatusBadge from "./StatusBadge";
 

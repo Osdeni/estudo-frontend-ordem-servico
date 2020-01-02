@@ -3,44 +3,27 @@
     <form @submit.prevent="submit()">
       <div class="login-page">
         <div class="card">
-          <div class="card-header">
-            Login
-          </div>
+          <div class="card-header">Ordem de Serviço: Login</div>
           <div class="card-body">
             <!-- TODO componentizar -->
             <ul class="alert alert-danger" v-show="erros.length > 0">
-              <li v-for="erro in erros">
-                {{ erro }}
-              </li>
+              <li v-for="erro in erros">{{ erro }}</li>
             </ul>
 
             <div class="form-group">
               <label for="email">E-mail</label>
-              <input
-                type="email"
-                v-model="form.email"
-                name="email"
-                class="form-control"
-                required
-              />
+              <input type="email" v-model="form.email" name="email" class="form-control" required />
             </div>
             <div class="form-group">
-              <label htmlFor="password">Senha</label>
-              <input
-                type="password"
-                v-model="form.senha"
-                name="senha"
-                class="form-control"
-              />
+              <label for="password">Senha</label>
+              <input type="password" v-model="form.senha" name="senha" class="form-control" />
             </div>
             <div class="form-group">
               <button
                 class="btn btn-block btn-primary"
                 :class="{ disabled: isProcessando }"
                 :disabled="isProcessando"
-              >
-                {{ getTitulo() }}
-              </button>
+              >{{ getTitulo() }}</button>
             </div>
           </div>
         </div>
@@ -83,7 +66,6 @@ export default {
             this.erros.push("Erro na autenticação, retorno inesperado");
           }
           console.log(err);
-          
         })
         .finally(() => {
           this.isProcessando = false;
@@ -102,8 +84,28 @@ export default {
 }
 
 /** TODO % com media query? */
-.login-page .card {
-  width: 30%;
+
+@media (min-width: 576px) {
+  .login-page .card {
+    width: 50%;
+  }
 }
 
+@media (min-width: 768px) {
+  .login-page .card {
+    width: 40%;
+  }
+}
+
+@media (min-width: 992px) {
+  .login-page .card {
+    width: 30%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .login-page .card {
+    width: 20%;
+  }
+}
 </style>

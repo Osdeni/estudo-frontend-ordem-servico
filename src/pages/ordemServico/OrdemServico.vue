@@ -6,6 +6,7 @@
       <router-link
         :to="{name: 'ordem-servico-add'}"
         class="btn btn-primary col-sm-12 col-md-2"
+        v-if="permissao.btn.addOrdemServico"
       >Cadastrar</router-link>
     </div>
 
@@ -61,28 +62,36 @@
 import { mapActions, mapState } from "vuex";
 import OrdemServicoFiltro from "./OrdemServicoFiltro";
 import StatusBadge from "./StatusBadge";
+import roles from '@/modules/auth/roles.js';
 
 export default {
   name: "OrdemServico",
   data: function() {
     return {
       isProcessando: false,
-      erros: []
+      erros: [],
+      permissao: {
+        btn: {
+          addOrdemServico: false
+        }
+      }
     };
   },
   components: {
     OrdemServicoFiltro, StatusBadge
   },
   async mounted() {
-    this.isProcessando = true;
+    this.isPermissoes();
     await this.getOrdemServicos();
   },
   computed: {
-    ...mapState("ordemServico", ["ordensServicos"])
+    ...mapState("ordemServico", ["ordensServicos"]),
   },
   methods: {
     ...mapActions("ordemServico", ["ActionFindOrdemServicos"]),
+    ...mapActions("auth", ["ActionCheckIsRole"]),
     getOrdemServicos(form) {
+      this.isProcessando = true;
       this.erros.length = 0;
 
       this.ActionFindOrdemServicos(form)
@@ -102,6 +111,12 @@ export default {
     },
     abrirDetalhes(id) {
       this.$router.push({ name: 'ordem-servico-detalhe', params: {id: id} });
+    },
+    isPermissoes() {
+        this.ActionCheckIsRole([roles.ATENDIMENTO])
+        .then((res) => {
+          this.permissao.btn.addOrdemServico = res;
+        })
     }
   }
 };
