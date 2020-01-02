@@ -24,8 +24,8 @@ export default [
         children: [
             {
                 name: 'ordem-servico-detalhe-evolucao-add',
-                path: '/ordem-servicos/:ordemServicoId/evolucao-add',
-                component: () => System.import(/* webpackChunkName: "OrdemServico" */ './pages/EvolucaoAdd.vue'),
+                path: '/ordem-servicos/:id/evolucao-add',
+                component: () => System.import(/* webpackChunkName: "OrdemServico" */ './pages/OrdemServicoEvolucaoAdd.vue'),
             }
         ]
     }

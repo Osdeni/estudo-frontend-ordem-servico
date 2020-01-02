@@ -19,5 +19,6 @@ export default {
         }
     },
     ordemServicosStatus: [],
-    ordemServicoEvolucoes: []
+    ordemServicoEvolucoes: [],
+    ordemServicoEvolucao: {}
 }

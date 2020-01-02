@@ -41,7 +41,7 @@ export const ActionFindOrdemServico = ({ commit }, payload) => {
 };
 
 export const ActionAlterarStatusOrdemServico = ({ commit, state }, payload) => {
-    state.ordemServico.status.index = payload;
+    state.ordemServico.status = payload;
     commit(types.SET_ORDEM_SERVICO, state.ordemServico);
 };
 
@@ -49,10 +49,7 @@ export const ActionAlterarStatusOrdemServico = ({ commit, state }, payload) => {
 export const ActionAddEvolucao = ({ commit, state }, payload) => {
     return services.ordemServico.addEvolucao({ ordemServicoId: state.ordemServico.id }, payload)
         .then(res => {
-            if (payload.status !== undefined && res.data.status !== undefined) {
-                state.ordemServico.status = res.data.status;
-                commit(types.SET_ORDEM_SERVICO, state.ordemServico);
-            }
+            commit(types.SET_ORDEM_SERVICO_EVOLUCAO, res.data);
         });
 };
 
@@ -61,4 +58,8 @@ export const ActionListAllEvolucoes = ({ commit }, payload) => {
         .then(res => {
             commit(types.SET_ORDEM_SERVICO_EVOLUCOES, res.data)
         });
+};
+
+export const ActionAddEvolucaoDirect = ({ commit }, payload) => {
+    commit(types.SET_ORDEM_SERVICO_EVOLUCOES_DIRECT, payload);
 };

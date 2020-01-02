@@ -16,20 +16,6 @@
           class="btn btn-secondary"
         >Adicionar Observação / Status</button>
 
-        <!-- Modal -->
-        <div
-          class="modal fade"
-          id="modalEvolucao"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="modalEvolucao"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog" role="document">
-            <router-view />
-          </div>
-        </div>
-
         <!-- TODO componentizar -->
         <ul class="alert alert-danger" v-show="erros.length > 0">
           <li v-for="erro in erros">{{ erro }}</li>
@@ -58,12 +44,18 @@
       </div>
     </div>
 
-    <div>
-      Evoluções
-      <ul>
-        <li>alterar status</li>
-        <li>informar descritivos</li>
-      </ul>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="modalEvolucao"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="modalEvolucao"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
@@ -72,6 +64,7 @@
 import { mapActions, mapState } from "vuex";
 import Status from "./status";
 import StatusBadge from "./StatusBadge";
+import { EventBus } from "@/main";
 
 export default {
   name: "OrdemServicoEvolucao",
@@ -84,7 +77,12 @@ export default {
   components: {
     StatusBadge
   },
-  mounted() {},
+  mounted() {
+    // intercepta o cadastro do cliente e atualiza no form de ordem de serviço
+    EventBus.$on("statusAdicionado", evolucao => {
+      this.atualizarStatus(evolucao);
+    });
+  },
   computed: {
     ...mapState("ordemServico", ["ordemServico", "ordemServicoEvolucoes"]),
     ...mapState("auth", ["user"])
@@ -93,7 +91,8 @@ export default {
     ...mapActions("auth", ["ActionCheckIsRole"]),
     ...mapActions("ordemServico", [
       "ActionAddEvolucao",
-      "ActionListAllEvolucoes"
+      "ActionListAllEvolucoes",
+      "ActionAddEvolucaoDirect"
     ]),
     getTituloBtnIniciar() {
       return this.isProcessando ? "Processando.." : "Iniciar";
@@ -163,11 +162,22 @@ export default {
       return data == null ? "" : new Date(data).toLocaleString();
     },
     abrirModalEvolucao() {
-      // if (this.$router.currentRoute.name != "ordem-servico-detalhe-evolucao-add") {
-      //   this.$router.push({ name: "ordem-servico-detalhe-evolucao-add", ordemServicoId: this.ordemServico.id });
-      // }
+      if (
+        this.$router.currentRoute.name != "ordem-servico-detalhe-evolucao-add"
+      ) {
+        this.$router.push({
+          name: "ordem-servico-detalhe-evolucao-add",
+          params: { id: this.ordemServico.id }
+        });
+      }
 
-      // $("#modalEvolucao").modal();
+      $("#modalEvolucao").modal();
+    },
+    atualizarStatus(evolucao) {
+      this.ActionAddEvolucaoDirect(evolucao);
+      if (evolucao.status != null) {
+        this.$emit("alteracaoStatus", evolucao.status);
+      }
     }
   },
   watch: {
