@@ -84,7 +84,7 @@ export default {
     });
   },
   computed: {
-    ...mapState("ordemServico", ["ordemServico", "ordemServicoEvolucoes"]),
+    ...mapState("ordemServico", ["ordemServico", "ordemServicoEvolucoes", "ordemServicoEvolucao"]),
     ...mapState("auth", ["user"])
   },
   methods: {
@@ -128,7 +128,7 @@ export default {
       })
         .then(() => {
           // avisa o parent para altera o estado
-          this.$emit("alteracaoStatus", this.ordemServico.status);
+          this.$emit("alteracaoStatus", this.ordemServicoEvolucao.status);
 
           this.$toast.open({
             position: "top",
