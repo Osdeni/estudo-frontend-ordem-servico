@@ -153,6 +153,7 @@ export default {
   directives: { mask },
   created() {
     // intercepta o cadastro do cliente e atualiza no form de ordem de serviço
+    EventBus.$off("clienteCadastrado");
     EventBus.$on("clienteCadastrado", cliente => {
       this.form.cliente = cliente;
     });

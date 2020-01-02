@@ -77,8 +77,9 @@ export default {
   components: {
     StatusBadge
   },
-  mounted() {
+  created() {
     // intercepta o cadastro do cliente e atualiza no form de ordem de serviço
+    EventBus.$off("statusAdicionado");
     EventBus.$on("statusAdicionado", evolucao => {
       this.atualizarStatus(evolucao);
     });
