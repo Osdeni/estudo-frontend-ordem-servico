@@ -7,7 +7,7 @@ export default [
             {
                 name: 'ordem-servico-add-cliente-add',
                 path: '/cliente',
-                component: () => System.import(/* webpackChunkName: "Cliente" */ '@/pages/cliente/ClienteAdd.vue'),
+                component: () => System.import(/* webpackChunkName: "Cliente" */ '@/pages/pessoa/ClienteAdd.vue'),
             }
         ]
     },
