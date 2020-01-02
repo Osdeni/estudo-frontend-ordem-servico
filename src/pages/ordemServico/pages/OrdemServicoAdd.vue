@@ -85,23 +85,12 @@
             </div>
 
             <div class="form-group">
-              <label for="cliente">
-                Responsável
-                <small>(Informe ao menos 2 caracteres)</small>
-              </label>
+              <label for="cliente">Responsável</label>
 
-              <div class="grupo-autocomplete">
-                <v-autocomplete
-                  class="col-md-12 pl-0 pr-0"
-                  input-class="form-control"
-                  :items="responsaveis"
-                  :value="form.responsavel"
-                  v-model="form.responsavel"
-                  :get-label="getLabel"
-                  :component-item="template"
-                  @update-items="updateItemsResponsavel"
-                ></v-autocomplete>
-              </div>
+              <select class="form-control" v-model="form.responsavel" name="responsavel">
+                <option disabled selected value>Selecione uma opção</option>
+                <option v-for="resp in responsaveis" :value="resp.id">{{ resp.nome }}</option>
+              </select>
             </div>
 
             <div class="form-group">
@@ -161,6 +150,7 @@ export default {
   async mounted() {
     await this.getTipos();
     await this.getMarcas();
+    await this.getListResponsaveis();
   },
   computed: {
     ...mapState("tipo", ["tipos"]),
@@ -173,7 +163,7 @@ export default {
     ...mapActions("marca", ["ActionFindAllMarcas"]),
     ...mapActions("cliente", [
       "ActionFindClienteAutocomplete",
-      "ActionFindResponsavelAutocomplete"
+      "ActionFindResponsaveis"
     ]),
     initData() {
       return {
@@ -230,11 +220,13 @@ export default {
         return null;
       }
     },
-    async updateItemsResponsavel(query) {
-      // método do autocomplete
-      await this.ActionFindResponsavelAutocomplete(query);
+    async getListResponsaveis() {
+      await this.ActionFindResponsaveis().catch(err => {
+        this.erros.push("Erro ao recuperar os responsáveis");
+      });
     },
     async submit() {
+      this.erros.length = 0;
       this.isProcessando = true;
 
       await this.ActionAddOrdemServicos(this.form)

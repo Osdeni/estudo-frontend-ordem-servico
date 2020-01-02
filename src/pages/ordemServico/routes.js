@@ -2,7 +2,7 @@ export default [
     {
         name: 'ordem-servico-add',
         path: '/ordem-servicos/add',
-        component: () => System.import(/* webpackChunkName: "OrdemServico" */ './OrdemServicoAdd.vue'),
+        component: () => System.import(/* webpackChunkName: "OrdemServico" */ './pages/OrdemServicoAdd.vue'),
         children: [
             {
                 name: 'ordem-servico-add-cliente-add',

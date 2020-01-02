@@ -1,5 +1,5 @@
 export default {
-    findOrdemServicos: {method: 'get', url: 'ordem-servicos?status={status}&responsavel.nome={responsavel}'},
+    findOrdemServicos: {method: 'get', url: 'ordem-servicos?status={status}&responsavel.id={responsavel}'},
     findOrdemServico: {method: 'get', url: 'ordem-servicos/{id}'},
     addOrdemServico: {method: 'post', url: 'ordem-servicos', '': '{params}'},
     listOrdemServicosStatus: {method: 'get', url: 'ordem-servicos/status'},

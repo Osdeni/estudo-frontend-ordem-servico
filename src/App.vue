@@ -85,6 +85,7 @@ export default {
   max-height: 400px;
   overflow-y: auto;
   border-bottom: 1px solid #157977;
+  z-index: 1000;
 }
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item {
   cursor: pointer;

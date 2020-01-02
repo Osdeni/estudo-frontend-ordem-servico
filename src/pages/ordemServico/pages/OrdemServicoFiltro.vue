@@ -20,13 +20,16 @@
           <div class="col-md-8">
             <label class for="responsavel">Responsável</label>
 
-            <input
+            <select
               type="text"
               class="form-control"
               id="responsavel"
               v-model="form.responsavel"
               placeholder="Nome do Responsavel"
-            />
+            >
+              <option disabled selected valud="">Seleciona uma opção</option>
+              <option v-for="resp in responsaveis" :value="resp.id">{{ resp.nome }}</option>
+            </select>
           </div>
 
           <div class="col-xs-12 offset-md-10 col-md-2">
@@ -54,18 +57,26 @@ export default {
   },
   created() {
     this.getListStatus();
+    this.getListResponsaveis();
   },
   computed: {
-    ...mapState("ordemServico", ["ordemServicosStatus"])
+    ...mapState("ordemServico", ["ordemServicosStatus"]),
+    ...mapState("cliente", ["responsaveis"])
   },
   methods: {
     ...mapActions("ordemServico", ["ActionListOrdemServicosStatus"]),
+    ...mapActions("cliente", ["ActionFindResponsaveis"]),
     submit() {
       this.$emit("filtrar", this.form);
     },
     getListStatus() {
       this.ActionListOrdemServicosStatus().catch(err => {
         this.$emit("erros", "Erro ao recuperar status de ordens de serviços");
+      });
+    },
+    async getListResponsaveis() {
+      await this.ActionFindResponsaveis().catch(err => {
+        this.$emit("erros", "Erro ao recuperar os responsáveis");
       });
     }
   }

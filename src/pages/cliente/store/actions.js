@@ -12,9 +12,9 @@ export const ActionFindClienteAutocomplete = ({ commit }, payload) => {
     });
 };
 
-export const ActionFindResponsavelAutocomplete = ({ commit }, payload) => {
-    return services.cliente.findResponsaveis({ nome: payload })
+export const ActionFindResponsaveis = ({ commit }, payload) => {
+    return services.cliente.findResponsaveis()
     .then(res => {
-        commit(types.SET_RESPONSAVEIS, res.data.content);    
+        commit(types.SET_RESPONSAVEIS, res.data);    
     });
 };
