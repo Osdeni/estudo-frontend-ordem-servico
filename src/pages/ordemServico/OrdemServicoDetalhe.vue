@@ -46,10 +46,7 @@
                 <tr>
                   <th>Status</th>
                   <td>
-                    <span
-                      class="badge"
-                      :class="ordemServico.status.cssClass"
-                    >{{ ordemServico.status.label }}</span>
+                    <status-badge :status="ordemServico.status" />
                   </td>
                 </tr>
                 <tr>
@@ -71,11 +68,16 @@
         </div>
       </div>
     </div>
+
+    <evolucoes @alteracaoStatus="alteracaoStatus"></evolucoes>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import roles from '@/modules/auth/roles.js';
+import Evolucoes from './OrdemServicoEvolucao';
+import StatusBadge from "./StatusBadge";
 
 export default {
   name: "OrdemServicoDetalhe",
@@ -86,14 +88,17 @@ export default {
       erros: []
     };
   },
+  components: {
+    Evolucoes, StatusBadge
+  },
   mounted() {
-    this.getServico(this.id);
+    this.getServico(this.id)
   },
   computed: {
     ...mapState("ordemServico", ["ordemServico"])
   },
   methods: {
-    ...mapActions("ordemServico", ["ActionFindOrdemServico"]),
+    ...mapActions("ordemServico", ["ActionFindOrdemServico", "ActionAlterarStatusOrdemServico"]),
     isDados() {
       return Object.entries(this.ordemServico).length === 0 ? false : true;
     },
@@ -124,6 +129,9 @@ export default {
       }
 
       return new Date(this.ordemServico.dataFinalizacao).toLocaleDateString();
+    },
+    alteracaoStatus(novoStatus) {
+      this.ActionAlterarStatusOrdemServico(novoStatus);
     }
   },
   watch: {

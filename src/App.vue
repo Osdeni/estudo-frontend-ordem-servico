@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- TODO componentizar menu -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" v-if="isUsuarioAutenticado()">
       <button
         class="navbar-toggler"
         type="button"
@@ -27,7 +27,27 @@
           <li class="nav-item">
             <a class="nav-link disabled" href="#">Disabled</a>
           </li>
+
+          <li class="nav-item"></li>
         </ul>
+
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >{{ user.usuario.nome }}</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Sair</a>
+            </div>
+          </li>
+        </ul>
+        <div class="text-light"></div>
       </div>
     </nav>
 
@@ -36,8 +56,18 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
-  name: "app"
+  name: "app",
+  computed: {
+    ...mapState("auth", ["user"])
+  },
+  methods: {
+    isUsuarioAutenticado() {
+      return Object.entries(this.user).length === 0 ? false : true;
+    }
+  }
 };
 </script>
 

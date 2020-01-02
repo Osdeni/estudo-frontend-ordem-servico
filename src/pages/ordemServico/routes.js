@@ -20,7 +20,14 @@ export default [
         name: 'ordem-servico-detalhe',
         path: '/ordem-servicos/:id',
         propos: true,
-        component: () => System.import(/* webpackChunkName: "OrdemServico" */ './OrdemServicoDetalhe.vue')
+        component: () => System.import(/* webpackChunkName: "OrdemServico" */ './OrdemServicoDetalhe.vue'),
+        children: [
+            {
+                name: 'ordem-servico-detalhe-evolucao-add',
+                path: '/ordem-servicos/:id/evolucao-add',
+                component: () => System.import(/* webpackChunkName: "OrdemServico" */ './pages/OrdemServicoEvolucaoAdd.vue'),
+            }
+        ]
     }
 
 ]

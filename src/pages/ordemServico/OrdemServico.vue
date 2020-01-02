@@ -46,7 +46,7 @@
                 <td>{{ os.marca.descricao }}</td>
                 <td>{{ new Date(os.dataAbertura).toLocaleDateString() }}</td>
                 <td class="text-center">
-                  <span class="badge" :class="os.status.cssClass">{{ os.status.label }}</span>
+                  <status-badge :status="os.status" />
                 </td>
               </tr>
             </tbody>
@@ -60,6 +60,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import OrdemServicoFiltro from "./OrdemServicoFiltro";
+import StatusBadge from "./StatusBadge";
 
 export default {
   name: "OrdemServico",
@@ -70,7 +71,7 @@ export default {
     };
   },
   components: {
-    OrdemServicoFiltro
+    OrdemServicoFiltro, StatusBadge
   },
   async mounted() {
     this.isProcessando = true;
