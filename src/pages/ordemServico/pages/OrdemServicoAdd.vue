@@ -6,17 +6,14 @@
       <router-link :to="{name: 'ordem-servico'}" class="btn btn-primary col-sm-12 col-md-2">Voltar</router-link>
     </div>
 
-    <form @submit.prevent="submit()">
+    <form @submit.prevent="submit()" novalidate="true">
       <div class>
         <div class="card">
           <div class="card-header">Cadastrar ordem de serviço</div>
           <div class="card-body">
-            <!-- TODO componentizar -->
-            <ul class="alert alert-danger" v-show="erros.length > 0">
-              <li v-for="erro in erros">{{ erro }}</li>
-            </ul>
+            <erros :erros="erros" />
 
-            <div class="form-group">
+            <div class="form-group" :class="{ 'hasError': $v.form.dataAbertura.$error }">
               <label for="dataAbertura">Data</label>
               <input
                 type="string"
@@ -29,7 +26,7 @@
               />
             </div>
 
-            <div class="form-group">
+            <div class="form-group" :class="{ 'hasError': $v.form.cliente.$error }">
               <label for="cliente">
                 Cliente
                 <small>(Informe ao menos 2 caracteres)</small>
@@ -55,7 +52,7 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" :class="{ 'hasError': $v.form.defeito.$error }">
               <label for="defeito">Defeito</label>
               <textarea
                 type="text"
@@ -67,7 +64,7 @@
             </div>
 
             <div class="row">
-              <div class="form-group col-md-6">
+              <div class="form-group col-md-6" :class="{ 'hasError': $v.form.tipo.$error }">
                 <label for="tipo">Tipo</label>
                 <select type="text" v-model="form.tipo" name="tipo" class="form-control" required>
                   <option disabled value>Selecione um item</option>
@@ -75,7 +72,7 @@
                 </select>
               </div>
 
-              <div class="form-group col-md-6">
+              <div class="form-group col-md-6" :class="{ 'hasError': $v.form.marca.$error }">
                 <label for="marca">Marca</label>
                 <select type="text" v-model="form.marca" name="marca" class="form-control" required>
                   <option disabled value>Selecione um item</option>
@@ -84,24 +81,13 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="cliente">
-                Responsável
-                <small>(Informe ao menos 2 caracteres)</small>
-              </label>
+            <div class="form-group" :class="{ 'hasError': $v.form.responsavel.$error }">
+              <label for="cliente">Responsável</label>
 
-              <div class="grupo-autocomplete">
-                <v-autocomplete
-                  class="col-md-12 pl-0 pr-0"
-                  input-class="form-control"
-                  :items="responsaveis"
-                  :value="form.responsavel"
-                  v-model="form.responsavel"
-                  :get-label="getLabel"
-                  :component-item="template"
-                  @update-items="updateItemsResponsavel"
-                ></v-autocomplete>
-              </div>
+              <select class="form-control" v-model="form.responsavel" name="responsavel">
+                <option disabled selected value>Selecione uma opção</option>
+                <option v-for="resp in responsaveis" :value="resp.id">{{ resp.nome }}</option>
+              </select>
             </div>
 
             <div class="form-group">
@@ -138,9 +124,24 @@ import { EventBus } from "@/main";
 import { mapActions, mapState } from "vuex";
 import { mask } from "vue-the-mask";
 import ItemTemplate from "./ItemAutocompleteCliente.vue";
+import { required, email } from "vuelidate/lib/validators";
+import Erros from "@/components/Erros";
 
 export default {
   name: "OrdemServicoAdd",
+  validations: {
+    form: {
+      dataAbertura: { required },
+      cliente: { required },
+      responsavel: { required },
+      defeito: { required },
+      tipo: { required },
+      marca: { required }
+    }
+  },
+  components: {
+    Erros
+  },
   data() {
     return {
       isProcessando: false,
@@ -153,6 +154,7 @@ export default {
   directives: { mask },
   created() {
     // intercepta o cadastro do cliente e atualiza no form de ordem de serviço
+    EventBus.$off("clienteCadastrado");
     EventBus.$on("clienteCadastrado", cliente => {
       this.form.cliente = cliente;
     });
@@ -160,6 +162,7 @@ export default {
   async mounted() {
     await this.getTipos();
     await this.getMarcas();
+    await this.getListResponsaveis();
   },
   computed: {
     ...mapState("tipo", ["tipos"]),
@@ -172,7 +175,7 @@ export default {
     ...mapActions("marca", ["ActionFindAllMarcas"]),
     ...mapActions("cliente", [
       "ActionFindClienteAutocomplete",
-      "ActionFindResponsavelAutocomplete"
+      "ActionFindResponsaveis"
     ]),
     initData() {
       return {
@@ -229,28 +232,36 @@ export default {
         return null;
       }
     },
-    async updateItemsResponsavel(query) {
-      // método do autocomplete
-      await this.ActionFindResponsavelAutocomplete(query);
+    async getListResponsaveis() {
+      await this.ActionFindResponsaveis().catch(err => {
+        this.erros.push("Erro ao recuperar os responsáveis");
+      });
     },
     async submit() {
-      this.isProcessando = true;
+      this.erros.length = 0;
 
-      await this.ActionAddOrdemServicos(this.form)
-        .then(res => {
-          this.$toast.open({
-            position: "top",
-            message: "Ordem de serviço criada com sucesso!",
-            type: "success"
+      this.$v.form.$touch();
+      if (this.$v.$invalid) {
+        this.erros.push("Favor verificar os campos obrigatórios");
+      } else {
+        this.isProcessando = true;
+        await this.ActionAddOrdemServicos(this.form)
+          .then(res => {
+            this.$toast.open({
+              position: "top",
+              message: "Ordem de serviço criada com sucesso!",
+              type: "success"
+            });
+            this.$router.push({ name: "ordem-servico" });
+          })
+          .catch(err => {
+            this.erros.push("Erro ao salvar a ordem de serviço");
+            this.erros.push(err.data.erro);
+          })
+          .finally(() => {
+            this.isProcessando = false;
           });
-          this.$router.push({ name: "ordem-servico" });
-        })
-        .catch(err => {
-          this.erros.push("Erro ao salvar a ordem de serviço");
-        })
-        .finally(() => {
-          this.isProcessando = false;
-        });
+      }
     }
   }
 };
