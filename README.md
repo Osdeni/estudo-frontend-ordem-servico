@@ -1,18 +1,48 @@
-# estudo-frontend-ordem-servico
+# Ordem de serviço - Estudos e Aprendizado - FrontEnd - VueJs
 
-> A Vue.js project
+- Recursos utilizados:
+    * Git e Gitflow;
+    * Bootstrap 4;
+    * VueJs;
+    * Npm e webpack para gerenciamento de dependências e build;
+    * VueX para trocas de estado;
+    * Autenticação com JWT;
+    * Componentização de algumas áreas;
+    * Roteamento:
+        * uso de lazy loading;
+        * uso de nested routes;
+        * Proteção de rotas sem token;
+    * Interceptação de Http para token e tratamento de erros 401, 403..
+    * Emissão de eventos de componentes filhos para parent local e global;
+    * Validação de formulários com Vuelidate;
+    * Automplete nos usuários;
+    * Máscara de data;
+    * Uso da camada service;
+    * Armazenamento de token em localstorage;
+    * Responsivo;
 
-## Build Setup
+## Instalação
 
 ``` bash
-# install dependencies
+# instalar as dependências
 npm install
 
-# serve with hot reload at localhost:8080
+# rodar em ambiente local na porta 8080
 npm run dev
 
-# build for production with minification
+# build para produção com dados minificados, comprimidos, url de prod, etc..
 npm run build
 ```
 
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Dados de acessos:
+``` bash
+API backend rodando em: http://localhost:8082/api/
+
+func1@gmail.com:
+senha: secret
+Role: ATENDIMENTO(Pode criar ordens)
+    
+func2@gmail.com e func3@gmail.com:
+senha: secret
+Role: TECNICO (Pode dar seguimento nas evoluções das SUAS ordens de serviços)
+```
