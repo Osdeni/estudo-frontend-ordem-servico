@@ -11,12 +11,15 @@ import Autocomplete from "v-autocomplete";
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/index.css';
 
+import Vuelidate from 'vuelidate';
+
 Vue.config.productionTip = false
 
 export const EventBus = new Vue();
 Vue.use(VueJWT);
 Vue.use(Autocomplete);
 Vue.use(VueToast);
+Vue.use(Vuelidate)
 
 window._Vue = new Vue({
   router,

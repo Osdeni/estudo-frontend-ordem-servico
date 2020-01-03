@@ -41,7 +41,6 @@ export const ActionFindOrdemServico = ({ commit }, payload) => {
 };
 
 export const ActionAlterarStatusOrdemServico = ({ commit }, payload) => {
-    console.log('alterando');
     commit(types.SET_ORDEM_SERVICO_ALT_STATUS, payload);
 };
 

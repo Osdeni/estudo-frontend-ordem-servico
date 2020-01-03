@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="submit()">
+  <form @submit.prevent="submit()" novalidate="true">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Cadastrar Evolução</h5>
@@ -8,12 +8,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <!-- TODO componentizar -->
-        <ul class="alert alert-danger" v-show="erros.length > 0">
-          <li v-for="erro in erros">{{ erro }}</li>
-        </ul>
+        <erros :erros="erros" />
 
-        <div class="form-group">
+        <div class="form-group" :class="{ 'hasError': $v.form.status.$error }">
           <label for="tipo">Status</label>
           <select v-model="form.status" name="status" class="form-control">
             <option selected disabled value>Selecione uma opção</option>
@@ -21,7 +18,7 @@
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" :class="{ 'hasError': $v.form.descricao.$error }">
           <label for="tipo">Descrição</label>
           <input
             type="text"
@@ -51,9 +48,28 @@
 import { mapActions, mapState } from "vuex";
 import Status from "./../status";
 import { EventBus } from "@/main";
+import { required, requiredIf } from "vuelidate/lib/validators";
+import Erros from "@/components/Erros";
 
 export default {
   name: "OrdemServicoEvolucao",
+  validations: {
+    form: {
+      descricao: {
+        required: requiredIf(function(m) {
+          return m.status == "" || m.status == null;
+        })
+      },
+      status: {
+        required: requiredIf(function(m) {
+          return m.descricao == "" || m.descricao == null;
+        })
+      }
+    }
+  },
+  components: {
+    Erros
+  },
   data() {
     return {
       erros: [],
@@ -66,6 +82,8 @@ export default {
     var self = this;
     $("#modalEvolucao").on("show.bs.modal", function(e) {
       self.clearData();
+      self.$v.form.$reset;
+      self.erros.length = 0;
     });
 
     this.getListStatus();
@@ -111,25 +129,32 @@ export default {
         });
     },
     async submit() {
-      this.isProcessando = true;
-      this.ActionAddEvolucao(Object.assign({}, this.form))
-        .then(() => {
-          EventBus.$emit("statusAdicionado", this.ordemServicoEvolucao);
+      this.erros.length = 0;
 
-          this.$toast.open({
-            position: "top",
-            message: "Evolução adicionada com sucesso",
-            type: "success"
+      this.$v.form.$touch();
+      if (this.$v.$invalid) {
+        this.erros.push("Favor verificar os campos obrigatórios");
+      } else {
+        this.isProcessando = true;
+        this.ActionAddEvolucao(Object.assign({}, this.form))
+          .then(() => {
+            EventBus.$emit("statusAdicionado", this.ordemServicoEvolucao);
+
+            this.$toast.open({
+              position: "top",
+              message: "Evolução adicionada com sucesso",
+              type: "success"
+            });
+            $("#modalEvolucao").modal("hide");
+          })
+          .catch(err => {
+            console.log(err);
+            this.erros.push("Erro ao salvar a evolução");
+          })
+          .finally(() => {
+            this.isProcessando = false;
           });
-          $("#modalEvolucao").modal("hide");
-        })
-        .catch(err => {
-          console.log(err);
-          this.erros.push("Erro ao salvar a evolução");
-        })
-        .finally(() => {
-          this.isProcessando = false;
-        });
+      }
     }
   }
 };

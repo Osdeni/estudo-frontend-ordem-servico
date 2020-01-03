@@ -1,22 +1,25 @@
 <template>
   <div>
-    <form @submit.prevent="submit()">
+    <form @submit.prevent="submit()" novalidate="true">
       <div class="login-page">
         <div class="card">
           <div class="card-header">Ordem de Serviço: Login</div>
           <div class="card-body">
-            <!-- TODO componentizar -->
-            <ul class="alert alert-danger" v-show="erros.length > 0">
-              <li v-for="erro in erros">{{ erro }}</li>
-            </ul>
+            <erros :erros="erros" />
 
-            <div class="form-group">
+            <div class="form-group" :class="{ 'hasError': $v.form.email.$error }">
               <label for="email">E-mail</label>
               <input type="email" v-model="form.email" name="email" class="form-control" required />
             </div>
-            <div class="form-group">
+            <div class="form-group" :class="{ 'hasError': $v.form.senha.$error }">
               <label for="password">Senha</label>
-              <input type="password" v-model="form.senha" name="senha" class="form-control" />
+              <input
+                type="password"
+                v-model="form.senha"
+                name="senha"
+                class="form-control"
+                required
+              />
             </div>
             <div class="form-group">
               <button
@@ -34,12 +37,23 @@
 
 <script>
 import { mapActions } from "vuex";
+import { required, email } from "vuelidate/lib/validators";
+import Erros from "@/components/Erros";
 
 export default {
+  validations: {
+    form: {
+      email: { required, email },
+      senha: { required }
+    }
+  },
+  components: {
+    Erros
+  },
   data: () => ({
     form: {
-      email: "func2@gmail.com",
-      senha: "secret"
+      email: "",
+      senha: ""
     },
     erros: [],
     isProcessando: false
@@ -51,25 +65,30 @@ export default {
     },
     async submit() {
       this.erros.length = 0;
-      this.isProcessando = true;
 
-      await this.ActionDoLogin(this.form)
-        .then(res => {
-          this.$router.push({ name: "home" });
-        })
-        .catch(err => {
-          if (err.data) {
-            this.erros.push(err.data.erro);
-          } else if (Number(err.status) === 0) {
-            this.erros.push("Erro na autenticação, API não está respondendo");
-          } else {
-            this.erros.push("Erro na autenticação, retorno inesperado");
-          }
-          console.log(err);
-        })
-        .finally(() => {
-          this.isProcessando = false;
-        });
+      this.$v.form.$touch();
+      if (this.$v.$invalid) {
+        this.erros.push("Favor verificar os campos obrigatórios");
+      } else {
+        this.isProcessando = true;
+        await this.ActionDoLogin(this.form)
+          .then(res => {
+            this.$router.push({ name: "home" });
+          })
+          .catch(err => {
+            if (err.data) {
+              this.erros.push(err.data.erro);
+            } else if (Number(err.status) === 0) {
+              this.erros.push("Erro na autenticação, API não está respondendo");
+            } else {
+              this.erros.push("Erro na autenticação, retorno inesperado");
+            }
+            console.log(err);
+          })
+          .finally(() => {
+            this.isProcessando = false;
+          });
+      }
     }
   }
 };

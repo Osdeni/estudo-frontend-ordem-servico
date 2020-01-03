@@ -10,10 +10,7 @@
       >Cadastrar</router-link>
     </div>
 
-    <!-- TODO componentizar -->
-    <ul class="alert alert-danger" v-show="erros.length > 0">
-      <li v-for="erro in erros">{{ erro }}</li>
-    </ul>
+    <erros :erros="erros" />
 
     <ordem-servico-filtro @filtrar="filtrar" @erros="errosFiltros"></ordem-servico-filtro>
 
@@ -63,6 +60,7 @@ import { mapActions, mapState } from "vuex";
 import OrdemServicoFiltro from "./OrdemServicoFiltro";
 import StatusBadge from "./StatusBadge";
 import roles from '@/modules/auth/roles.js';
+import Erros from '@/components/Erros';
 
 export default {
   name: "OrdemServico",
@@ -78,7 +76,7 @@ export default {
     };
   },
   components: {
-    OrdemServicoFiltro, StatusBadge
+    OrdemServicoFiltro, StatusBadge, Erros
   },
   async mounted() {
     this.isPermissoes();

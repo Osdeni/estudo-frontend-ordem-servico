@@ -13,10 +13,7 @@
         <div class="table-responsive">
           <p v-show="isProcessando">Aguarde, carregando..</p>
 
-          <!-- TODO componentizar -->
-          <ul class="alert alert-danger" v-show="erros.length > 0">
-            <li v-for="erro in erros">{{ erro }}</li>
-          </ul>
+          <erros :erros="erros" />
 
           <p v-show="!isDados()">Nenhuma ordem de seviço encontrada</p>
 
@@ -77,6 +74,7 @@
 import { mapActions, mapState } from "vuex";
 import Evolucoes from './OrdemServicoEvolucao';
 import StatusBadge from "./StatusBadge";
+import Erros from '@/components/Erros';
 
 export default {
   name: "OrdemServicoDetalhe",
@@ -88,7 +86,7 @@ export default {
     };
   },
   components: {
-    Evolucoes, StatusBadge
+    Evolucoes, StatusBadge, Erros
   },
   mounted() {
     this.getServico(this.id)

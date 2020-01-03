@@ -16,10 +16,7 @@
           class="btn btn-secondary"
         >Adicionar Observação / Status</button>
 
-        <!-- TODO componentizar -->
-        <ul class="alert alert-danger" v-show="erros.length > 0">
-          <li v-for="erro in erros">{{ erro }}</li>
-        </ul>
+        <erros :erros="erros" />
 
         <div class="table-responsive mt-3" v-show="isShowEvolucoes()">
           <table class="table table-striped">
@@ -65,6 +62,7 @@ import { mapActions, mapState } from "vuex";
 import Status from "./../status";
 import StatusBadge from "./StatusBadge";
 import { EventBus } from "@/main";
+import Erros from '@/components/Erros';
 
 export default {
   name: "OrdemServicoEvolucao",
@@ -75,7 +73,7 @@ export default {
     };
   },
   components: {
-    StatusBadge
+    StatusBadge, Erros
   },
   created() {
     // intercepta o cadastro do cliente e atualiza no form de ordem de serviço
