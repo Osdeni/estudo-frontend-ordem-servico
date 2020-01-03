@@ -27,7 +27,7 @@
               v-model="form.responsavel"
               placeholder="Nome do Responsavel"
             >
-              <option disabled selected valud="">Seleciona uma opção</option>
+              <option selected value="">Todos</option>
               <option v-for="resp in responsaveis" :value="resp.id">{{ resp.nome }}</option>
             </select>
           </div>

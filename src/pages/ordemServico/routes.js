@@ -14,13 +14,13 @@ export default [
     {
         name: 'ordem-servico',
         path: '/ordem-servicos',
-        component: () => System.import(/* webpackChunkName: "OrdemServico" */ './OrdemServico.vue')
+        component: () => System.import(/* webpackChunkName: "OrdemServico" */ './pages/OrdemServico.vue')
     },
     {
         name: 'ordem-servico-detalhe',
         path: '/ordem-servicos/:id',
         propos: true,
-        component: () => System.import(/* webpackChunkName: "OrdemServico" */ './OrdemServicoDetalhe.vue'),
+        component: () => System.import(/* webpackChunkName: "OrdemServico" */ './pages/OrdemServicoDetalhe.vue'),
         children: [
             {
                 name: 'ordem-servico-detalhe-evolucao-add',

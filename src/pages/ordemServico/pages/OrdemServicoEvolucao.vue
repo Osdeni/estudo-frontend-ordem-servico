@@ -62,7 +62,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import Status from "./status";
+import Status from "./../status";
 import StatusBadge from "./StatusBadge";
 import { EventBus } from "@/main";
 

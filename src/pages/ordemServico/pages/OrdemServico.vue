@@ -60,7 +60,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import OrdemServicoFiltro from "./pages/OrdemServicoFiltro";
+import OrdemServicoFiltro from "./OrdemServicoFiltro";
 import StatusBadge from "./StatusBadge";
 import roles from '@/modules/auth/roles.js';
 

@@ -240,6 +240,7 @@ export default {
         })
         .catch(err => {
           this.erros.push("Erro ao salvar a ordem de serviço");
+          this.erros.push(err.data.erro);
         })
         .finally(() => {
           this.isProcessando = false;
