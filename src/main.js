@@ -13,7 +13,7 @@ import 'vue-toast-notification/dist/index.css';
 
 import Vuelidate from 'vuelidate';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 export const EventBus = new Vue();
 Vue.use(VueJWT);

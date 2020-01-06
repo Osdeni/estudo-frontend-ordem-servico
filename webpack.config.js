@@ -1,19 +1,37 @@
 var path = require('path')
 var webpack = require('webpack')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
+
+let plugins = [];
+
+plugins.push(new webpack.ProvidePlugin({
+  $: 'jquery',
+  jQuery: 'jquery'
+}));
+
+plugins.push(new HtmlWebpackPlugin({
+  hash: true,
+  minify: {
+    html5: true,
+    collapseWhitespace: true,
+    removeComments: true
+  },
+  filename: 'index.html',
+  template: __dirname + '/main.html' 
+}));
+
+if (process.env.NODE_ENV == 'production') {
+  plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
+}
+
 
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
     filename: 'build.js'
   },
-  plugins: [
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery'
-    })
-  ],
+  plugins: plugins,
   module: {
     rules: [
       {
@@ -22,7 +40,7 @@ module.exports = {
           'vue-style-loader',
           'css-loader'
         ],
-      },      {
+      }, {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
@@ -69,7 +87,8 @@ if (process.env.NODE_ENV === 'production') {
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: '"production"'
+        NODE_ENV: '"production"',
+        API_URL: '"http://34.95.145.32:8082/api"'
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
