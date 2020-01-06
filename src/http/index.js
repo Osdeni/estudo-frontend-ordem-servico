@@ -8,7 +8,7 @@ Vue.use(VueResource);
 const http = Vue.http;
 
 // prefixo das requisições
-http.options.root = 'http://localhost:8082/api/';
+http.options.root = process.env.API_URL ? process.env.API_URL : 'http://localhost:8082/api/';
 
 http.interceptors.push(interceptors);
 

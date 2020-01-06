@@ -1,5 +1,11 @@
 # Ordem de serviço - Estudos e Aprendizado - FrontEnd - VueJs
 
+### Publicação em nuvem:
+    * http://35.198.44.70
+        * Google cloud console
+        * Docker e Kubernetes
+        * referências: (https://github.com/Osdeni/kubernets-gcp)
+
 - Recursos utilizados:
     * Git e Gitflow;
     * Bootstrap 4;
@@ -20,6 +26,11 @@
     * Uso da camada service;
     * Armazenamento de token em localstorage;
     * Responsivo;
+    * Para build:
+        * uso do webpack
+        * minificação de javascripts e css
+        * nomeclatura com random words para não fazer cache
+        * docker, docker compose, minikube
 
 ## Instalação
 
@@ -29,14 +40,12 @@ npm install
 
 # rodar em ambiente local na porta 8080
 npm run dev
-
-# build para produção com dados minificados, comprimidos, url de prod, etc..
-npm run build
 ```
 
 ## Dados de acessos:
 ``` bash
-API backend rodando em: http://localhost:8082/api/
+API backend nuvem: http://34.95.145.32:8082/api/
+API backend local: http://localhost:8082/api/
 
 func1@gmail.com:
 senha: secret

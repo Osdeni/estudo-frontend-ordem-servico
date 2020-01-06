@@ -1,0 +1,8 @@
+version: '3.3'
+
+services:
+    ordem-servico-front:
+        image: osdeni-ordem-servico-vue:v1
+        ports: 
+            - 8080:80
+        command: ["nginx", "-g", "daemon off;"]
